@@ -3,68 +3,185 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daham Denuwan | Portfolio</title>
+<title>Chess Clock</title>
 
-<link rel="stylesheet" href="style.css">
-  <meta name="google-site-verification" content="xshoEP5JmMlLWGpmstKRZ0rhy76IoD4wbmzJaYTUVjQ" />
+<style>
+body {
+margin:0;
+font-family:Arial;
+background:#070b18;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+height:100vh;
+}
+
+h1 {
+margin-bottom:10px;
+color:#4facfe;
+}
+
+.clock-container {
+display:flex;
+gap:20px;
+}
+
+.player {
+width:280px;
+height:320px;
+border-radius:20px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-size:48px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+user-select:none;
+}
+
+.player1 {
+background:linear-gradient(145deg,#1b2a6b,#0b1020);
+border:2px solid #4facfe;
+}
+
+.player2 {
+background:linear-gradient(145deg,#0f2a1f,#0b1020);
+border:2px solid #2cff9b;
+}
+
+.active {
+transform:scale(1.05);
+box-shadow:0 0 25px rgba(79,172,254,0.5);
+}
+
+.controls {
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+
+button {
+padding:10px 20px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:16px;
+}
+
+.start {background:#4facfe;color:white;}
+.reset {background:#ff4f4f;color:white;}
+
+.settings {
+margin-top:20px;
+display:flex;
+gap:10px;
+}
+
+input {
+width:60px;
+padding:5px;
+border-radius:5px;
+border:none;
+text-align:center;
+}
+</style>
 </head>
 
 <body>
 
-<div class="cursor"></div>
+<h1>♟ Chess Clock</h1>
 
-<header class="hero">
-  <h1 class="glow">Hi, I'm Daham 👋</h1>
-  <p class="typing">Student Developer • Creator of EduTrack • Physics Explorer</p>
+<div class="clock-container">
 
-  <a href="#projects" class="btn">View My Work</a>
-</header>
+<div id="p1" class="player player1 active">05:00</div>
+<div id="p2" class="player player2">05:00</div>
 
-<section class="section" id="about">
-  <h2>About Me</h2>
-  <p>
-    I’m a student from Sri Lanka who loves building software, solving problems,
-    and exploring physics and technology. I enjoy turning ideas into real projects.
-  </p>
-</section>
+</div>
 
-<section class="section" id="projects">
-  <h2>Projects</h2>
+<div class="controls">
+<button class="start" onclick="startStop()">Start / Pause</button>
+<button class="reset" onclick="reset()">Reset</button>
+</div>
 
-  <div class="grid">
+<div class="settings">
+<label>Minutes: <input id="min" value="5"></label>
+</div>
 
-    <div class="card">
-      <h3>EduTrack</h3>
-      <p>Python-based school report system with rankings and approvals.</p>
-    </div>
+<script>
+let time1 = 300;
+let time2 = 300;
+let active = 1;
+let running = false;
+let interval;
 
-    <div class="card">
-      <h3>Physics Ideas</h3>
-      <p>Simulations and experiments for understanding real-world motion.</p>
-    </div>
+const p1 = document.getElementById("p1");
+const p2 = document.getElementById("p2");
 
-    <div class="card">
-      <h3>Future AI Projects</h3>
-      <p>Exploring machine learning and smart systems.</p>
-    </div>
+function format(t){
+let m = Math.floor(t/60);
+let s = t%60;
+return `${m}:${s.toString().padStart(2,'0')}`;
+}
 
-  </div>
-</section>
+function update(){
+p1.innerText = format(time1);
+p2.innerText = format(time2);
+}
 
-<section class="section" id="achievements">
-  <h2>Achievements</h2>
+function switchTurn(){
+if(active===1){
+active=2;
+p1.classList.remove("active");
+p2.classList.add("active");
+}else{
+active=1;
+p2.classList.remove("active");
+p1.classList.add("active");
+}
+}
 
-  <ul>
-    <li>🏆 4th Place – District Innovation Competition (EduTrack)</li>
-    <li>🎤 Debate Competitor</li>
-    <li>💻 Python Developer</li>
-  </ul>
-</section>
+p1.onclick = ()=>{ if(running){ switchTurn(); } }
+p2.onclick = ()=>{ if(running){ switchTurn(); } }
 
-<footer>
-  <p>© 2026 Daham Denuwan</p>
-</footer>
+function startStop(){
+if(!running){
+running = true;
+interval = setInterval(()=>{
+if(active===1){
+time1--;
+if(time1<=0){alert("Player 2 wins!");reset();}
+}else{
+time2--;
+if(time2<=0){alert("Player 1 wins!");reset();}
+}
+update();
+},1000);
+}else{
+running = false;
+clearInterval(interval);
+}
+}
 
-<script src="script.js"></script>
+function reset(){
+clearInterval(interval);
+running=false;
+active=1;
+
+let m = parseInt(document.getElementById("min").value);
+time1 = m*60;
+time2 = m*60;
+
+p1.classList.add("active");
+p2.classList.remove("active");
+update();
+}
+
+update();
+</script>
+
 </body>
 </html>
