@@ -2,185 +2,131 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chess Clock</title>
-
 <style>
-body {
-margin:0;
-font-family:Arial;
-background:#070b18;
-color:white;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-height:100vh;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #111;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        justify-content: center;
+    }
 
-h1 {
-margin-bottom:10px;
-color:#4facfe;
-}
+    .clock-container {
+        display: flex;
+        gap: 20px;
+    }
 
-.clock-container {
-display:flex;
-gap:20px;
-}
+    .clock {
+        width: 200px;
+        height: 200px;
+        background: #222;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        cursor: pointer;
+        user-select: none;
+        transition: 0.2s;
+    }
 
-.player {
-width:280px;
-height:320px;
-border-radius:20px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-font-size:48px;
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
-user-select:none;
-}
+    .active {
+        background: #0a84ff;
+    }
 
-.player1 {
-background:linear-gradient(145deg,#1b2a6b,#0b1020);
-border:2px solid #4facfe;
-}
+    .controls {
+        margin-top: 20px;
+    }
 
-.player2 {
-background:linear-gradient(145deg,#0f2a1f,#0b1020);
-border:2px solid #2cff9b;
-}
-
-.active {
-transform:scale(1.05);
-box-shadow:0 0 25px rgba(79,172,254,0.5);
-}
-
-.controls {
-margin-top:20px;
-display:flex;
-gap:10px;
-}
-
-button {
-padding:10px 20px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-size:16px;
-}
-
-.start {background:#4facfe;color:white;}
-.reset {background:#ff4f4f;color:white;}
-
-.settings {
-margin-top:20px;
-display:flex;
-gap:10px;
-}
-
-input {
-width:60px;
-padding:5px;
-border-radius:5px;
-border:none;
-text-align:center;
-}
+    button, input {
+        padding: 10px;
+        margin: 5px;
+        font-size: 16px;
+    }
 </style>
 </head>
-
 <body>
 
-<h1>♟ Chess Clock</h1>
+<h1>♟️ Chess Clock</h1>
 
 <div class="clock-container">
-
-<div id="p1" class="player player1 active">05:00</div>
-<div id="p2" class="player player2">05:00</div>
-
+    <div id="player1" class="clock active">5:00</div>
+    <div id="player2" class="clock">5:00</div>
 </div>
 
 <div class="controls">
-<button class="start" onclick="startStop()">Start / Pause</button>
-<button class="reset" onclick="reset()">Reset</button>
-</div>
-
-<div class="settings">
-<label>Minutes: <input id="min" value="5"></label>
+    <input id="timeInput" type="number" value="5" min="1" /> minutes
+    <button onclick="reset()">Reset</button>
+    <button onclick="pause()">Pause</button>
 </div>
 
 <script>
 let time1 = 300;
 let time2 = 300;
 let active = 1;
-let running = false;
-let interval;
+let running = true;
 
-const p1 = document.getElementById("p1");
-const p2 = document.getElementById("p2");
+const p1 = document.getElementById("player1");
+const p2 = document.getElementById("player2");
 
 function format(t){
-let m = Math.floor(t/60);
-let s = t%60;
-return `${m}:${s.toString().padStart(2,'0')}`;
+    let m = Math.floor(t / 60);
+    let s = t % 60;
+    return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function update(){
-p1.innerText = format(time1);
-p2.innerText = format(time2);
+function updateDisplay(){
+    p1.textContent = format(time1);
+    p2.textContent = format(time2);
 }
 
-function switchTurn(){
-if(active===1){
-active=2;
-p1.classList.remove("active");
-p2.classList.add("active");
-}else{
-active=1;
-p2.classList.remove("active");
-p1.classList.add("active");
-}
+p1.onclick = () => switchTurn(2);
+p2.onclick = () => switchTurn(1);
+
+function switchTurn(next){
+    if(!running) return;
+    active = next;
+    p1.classList.toggle("active", active === 1);
+    p2.classList.toggle("active", active === 2);
 }
 
-p1.onclick = ()=>{ if(running){ switchTurn(); } }
-p2.onclick = ()=>{ if(running){ switchTurn(); } }
+function tick(){
+    if(!running) return;
 
-function startStop(){
-if(!running){
-running = true;
-interval = setInterval(()=>{
-if(active===1){
-time1--;
-if(time1<=0){alert("Player 2 wins!");reset();}
-}else{
-time2--;
-if(time2<=0){alert("Player 1 wins!");reset();}
+    if(active === 1){
+        time1--;
+        if(time1 <= 0) time1 = 0;
+    } else {
+        time2--;
+        if(time2 <= 0) time2 = 0;
+    }
+
+    updateDisplay();
 }
-update();
-},1000);
-}else{
-running = false;
-clearInterval(interval);
-}
-}
+
+setInterval(tick, 1000);
 
 function reset(){
-clearInterval(interval);
-running=false;
-active=1;
+    let mins = parseInt(document.getElementById("timeInput").value);
+    time1 = mins * 60;
+    time2 = mins * 60;
+    active = 1;
+    running = true;
 
-let m = parseInt(document.getElementById("min").value);
-time1 = m*60;
-time2 = m*60;
+    p1.classList.add("active");
+    p2.classList.remove("active");
 
-p1.classList.add("active");
-p2.classList.remove("active");
-update();
+    updateDisplay();
 }
 
-update();
+function pause(){
+    running = !running;
+}
 </script>
 
 </body>
