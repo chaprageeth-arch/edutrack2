@@ -2,77 +2,89 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chess Clock</title>
+<title>Professional Chess Clock</title>
+
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #111;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
-        justify-content: center;
-    }
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #111;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 
-    .clock-container {
-        display: flex;
-        gap: 20px;
-    }
+.container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
 
-    .clock {
-        width: 200px;
-        height: 200px;
-        background: #222;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 48px;
-        cursor: pointer;
-        user-select: none;
-        transition: 0.2s;
-    }
+.clock {
+    width: 220px;
+    height: 180px;
+    background: #222;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-    .active {
-        background: #0a84ff;
-    }
+.active {
+    background: #00aaff;
+}
 
-    .controls {
-        margin-top: 20px;
-    }
-
-    button, input {
-        padding: 10px;
-        margin: 5px;
-        font-size: 16px;
-    }
+button, input {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+}
 </style>
 </head>
+
 <body>
 
-<h1>♟️ Chess Clock</h1>
+<h1>♟️ Professional Chess Clock</h1>
 
-<div class="clock-container">
-    <div id="player1" class="clock active">5:00</div>
-    <div id="player2" class="clock">5:00</div>
+<div>
+    ⬜ P1: <input id="p1time" type="number" value="5" min="1"> min
+    ⬛ P2: <input id="p2time" type="number" value="5" min="1"> min
 </div>
 
-<div class="controls">
-    <input id="timeInput" type="number" value="5" min="1" /> minutes
-    <button onclick="reset()">Reset</button>
-    <button onclick="pause()">Pause</button>
+<div class="container">
+    <div id="p1" class="clock active">
+        <div>PLAYER 1</div>
+        <div id="t1">5:00</div>
+        <button onclick="switchTurn(2)">▶ Start / Switch</button>
+    </div>
+
+    <div id="p2" class="clock">
+        <div>PLAYER 2</div>
+        <div id="t2">5:00</div>
+        <button onclick="switchTurn(1)">▶ Start / Switch</button>
+    </div>
 </div>
+
+<button onclick="startGame()">Start Game</button>
+<button onclick="pauseGame()">Pause</button>
+<button onclick="resetGame()">Reset</button>
 
 <script>
 let time1 = 300;
 let time2 = 300;
 let active = 1;
-let running = true;
+let running = false;
+let interval = null;
 
-const p1 = document.getElementById("player1");
-const p2 = document.getElementById("player2");
+const p1 = document.getElementById("p1");
+const p2 = document.getElementById("p2");
 
 function format(t){
     let m = Math.floor(t / 60);
@@ -80,19 +92,9 @@ function format(t){
     return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function updateDisplay(){
-    p1.textContent = format(time1);
-    p2.textContent = format(time2);
-}
-
-p1.onclick = () => switchTurn(2);
-p2.onclick = () => switchTurn(1);
-
-function switchTurn(next){
-    if(!running) return;
-    active = next;
-    p1.classList.toggle("active", active === 1);
-    p2.classList.toggle("active", active === 2);
+function update(){
+    document.getElementById("t1").innerText = format(time1);
+    document.getElementById("t2").innerText = format(time2);
 }
 
 function tick(){
@@ -106,26 +108,57 @@ function tick(){
         if(time2 <= 0) time2 = 0;
     }
 
-    updateDisplay();
+    update();
 }
 
-setInterval(tick, 1000);
+function startGame(){
+    let m1 = parseInt(document.getElementById("p1time").value);
+    let m2 = parseInt(document.getElementById("p2time").value);
 
-function reset(){
-    let mins = parseInt(document.getElementById("timeInput").value);
-    time1 = mins * 60;
-    time2 = mins * 60;
+    time1 = m1 * 60;
+    time2 = m2 * 60;
+
     active = 1;
     running = true;
 
     p1.classList.add("active");
     p2.classList.remove("active");
 
-    updateDisplay();
+    if(interval) clearInterval(interval);
+    interval = setInterval(tick, 1000);
+
+    update();
 }
 
-function pause(){
+function switchTurn(next){
+    if(!running) return;
+
+    active = next;
+
+    p1.classList.toggle("active", active === 1);
+    p2.classList.toggle("active", active === 2);
+}
+
+function pauseGame(){
     running = !running;
+}
+
+function resetGame(){
+    running = false;
+    clearInterval(interval);
+
+    let m1 = parseInt(document.getElementById("p1time").value);
+    let m2 = parseInt(document.getElementById("p2time").value);
+
+    time1 = m1 * 60;
+    time2 = m2 * 60;
+
+    active = 1;
+
+    p1.classList.add("active");
+    p2.classList.remove("active");
+
+    update();
 }
 </script>
 
