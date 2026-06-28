@@ -2,164 +2,184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Professional Chess Clock</title>
+<title>Chess Clock</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #111;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#0e0e10;
+    font-family: system-ui, Arial;
+    color:#eaeaea;
 }
 
-.container {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+.top {
+    margin-bottom:20px;
+    display:flex;
+    gap:10px;
 }
 
-.clock {
-    width: 220px;
-    height: 180px;
-    background: #222;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 40px;
-    cursor: pointer;
-    transition: 0.2s;
+input{
+    width:70px;
+    padding:8px;
+    background:#1a1a1d;
+    border:1px solid #2a2a2e;
+    color:#fff;
+    outline:none;
+    text-align:center;
+    border-radius:6px;
 }
 
-.active {
-    background: #00aaff;
+.clock-wrap{
+    display:flex;
+    gap:18px;
 }
 
-button, input {
-    padding: 10px;
-    margin: 5px;
-    font-size: 16px;
+.clock{
+    width:220px;
+    height:160px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:52px;
+    background:#151518;
+    border:1px solid #2a2a2e;
+    border-radius:14px;
+    cursor:pointer;
+    user-select:none;
+    transition:0.15s;
+}
+
+.active{
+    border-color:#4aa3ff;
+    color:#4aa3ff;
+}
+
+.controls{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
+}
+
+button{
+    padding:8px 14px;
+    background:#1a1a1d;
+    border:1px solid #2a2a2e;
+    color:#eaeaea;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+button:hover{
+    border-color:#4aa3ff;
 }
 </style>
 </head>
 
 <body>
 
-<h1>♟️ Professional Chess Clock</h1>
-
-<div>
-    ⬜ P1: <input id="p1time" type="number" value="5" min="1"> min
-    ⬛ P2: <input id="p2time" type="number" value="5" min="1"> min
+<div class="top">
+    <input id="t1set" type="number" value="5" min="1">
+    <input id="t2set" type="number" value="5" min="1">
 </div>
 
-<div class="container">
-    <div id="p1" class="clock active">
-        <div>PLAYER 1</div>
-        <div id="t1">5:00</div>
-        <button onclick="switchTurn(2)">▶ Start / Switch</button>
-    </div>
-
-    <div id="p2" class="clock">
-        <div>PLAYER 2</div>
-        <div id="t2">5:00</div>
-        <button onclick="switchTurn(1)">▶ Start / Switch</button>
-    </div>
+<div class="clock-wrap">
+    <div id="c1" class="clock active">5:00</div>
+    <div id="c2" class="clock">5:00</div>
 </div>
 
-<button onclick="startGame()">Start Game</button>
-<button onclick="pauseGame()">Pause</button>
-<button onclick="resetGame()">Reset</button>
+<div class="controls">
+    <button onclick="start()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+</div>
 
 <script>
-let time1 = 300;
-let time2 = 300;
+let t1 = 300;
+let t2 = 300;
 let active = 1;
 let running = false;
-let interval = null;
+let timer = null;
 
-const p1 = document.getElementById("p1");
-const p2 = document.getElementById("p2");
+const c1 = document.getElementById("c1");
+const c2 = document.getElementById("c2");
 
-function format(t){
-    let m = Math.floor(t / 60);
-    let s = t % 60;
+function fmt(t){
+    let m = Math.floor(t/60);
+    let s = t%60;
     return `${m}:${s.toString().padStart(2,'0')}`;
 }
 
-function update(){
-    document.getElementById("t1").innerText = format(time1);
-    document.getElementById("t2").innerText = format(time2);
+function draw(){
+    c1.textContent = fmt(t1);
+    c2.textContent = fmt(t2);
 }
 
 function tick(){
     if(!running) return;
 
     if(active === 1){
-        time1--;
-        if(time1 <= 0) time1 = 0;
+        t1--;
+        if(t1 < 0) t1 = 0;
     } else {
-        time2--;
-        if(time2 <= 0) time2 = 0;
+        t2--;
+        if(t2 < 0) t2 = 0;
     }
 
-    update();
+    draw();
 }
 
-function startGame(){
-    let m1 = parseInt(document.getElementById("p1time").value);
-    let m2 = parseInt(document.getElementById("p2time").value);
-
-    time1 = m1 * 60;
-    time2 = m2 * 60;
+function start(){
+    t1 = parseInt(document.getElementById("t1set").value) * 60;
+    t2 = parseInt(document.getElementById("t2set").value) * 60;
 
     active = 1;
     running = true;
 
-    p1.classList.add("active");
-    p2.classList.remove("active");
+    c1.classList.add("active");
+    c2.classList.remove("active");
 
-    if(interval) clearInterval(interval);
-    interval = setInterval(tick, 1000);
+    clearInterval(timer);
+    timer = setInterval(tick, 1000);
 
-    update();
+    draw();
 }
 
-function switchTurn(next){
+function switchTo(next){
     if(!running) return;
 
     active = next;
-
-    p1.classList.toggle("active", active === 1);
-    p2.classList.toggle("active", active === 2);
+    c1.classList.toggle("active", active === 1);
+    c2.classList.toggle("active", active === 2);
 }
 
-function pauseGame(){
+c1.onclick = () => switchTo(2);
+c2.onclick = () => switchTo(1);
+
+function pause(){
     running = !running;
 }
 
-function resetGame(){
+function reset(){
     running = false;
-    clearInterval(interval);
+    clearInterval(timer);
 
-    let m1 = parseInt(document.getElementById("p1time").value);
-    let m2 = parseInt(document.getElementById("p2time").value);
-
-    time1 = m1 * 60;
-    time2 = m2 * 60;
+    t1 = parseInt(document.getElementById("t1set").value) * 60;
+    t2 = parseInt(document.getElementById("t2set").value) * 60;
 
     active = 1;
 
-    p1.classList.add("active");
-    p2.classList.remove("active");
+    c1.classList.add("active");
+    c2.classList.remove("active");
 
-    update();
+    draw();
 }
+
+draw();
 </script>
 
 </body>
