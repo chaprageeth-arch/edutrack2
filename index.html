@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Free JSON to CSV Converter Online - 100% Private & Instant</title>
-    <meta name="description" content="Convert JSON data to Excel CSV format instantly. Free, ad-free, and 100% private. All processing happens in your browser—no data is uploaded to a server.">
-    <meta name="keywords" content="json to csv, convert json to excel, json to csv converter, free json converter, private json parser">
+    <meta name="description" content="Convert nested JSON data to Excel CSV format instantly. Free, ad-free, and 100% private. All processing happens in your browser—no data is uploaded to a server.">
+    <meta name="keywords" content="json to csv, convert json to excel, json to csv converter, free json converter, private json parser, flatten json">
     
     <style>
         :root {
@@ -16,7 +16,6 @@
             --text-muted: #94a3b8;
             --accent-color: #38bdf8;
             --accent-hover: #0ea5e9;
-            --success-color: #4ade80;
             --border-color: #334155;
         }
 
@@ -24,7 +23,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         body {
@@ -34,6 +33,338 @@
             padding: 2rem 1rem;
         }
 
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background-color: #1e293b;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .converter-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 380px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            color: #38bdf8;
+            font-family: Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button:disabled {
+            background-color: #334155;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        button.secondary:hover {
+            background-color: #334155;
+        }
+
+        .error-message {
+            color: #f87171;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: none;
+            padding: 0.75rem;
+            background: rgba(248, 113, 113, 0.1);
+            border-radius: 6px;
+        }
+
+        .info-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-container">
+                <span class="badge">🔒 100% Private (Local Browser Processing)</span>
+                <span class="badge">🚀 Deep Nested Object Flattening</span>
+                <span class="badge">✨ Ad-Free Experience</span>
+            </div>
+            <h1>Smart JSON to CSV Converter</h1>
+            <p class="subtitle">An ultra-fast, modern utility built for developers and data analysts. Instantly parse and denormalize multi-layered JSON records into clean, Excel-ready tables.</p>
+        </header>
+
+        <div class="converter-box">
+            <div class="grid">
+                <div class="input-group">
+                    <label for="jsonInput">Input JSON Data</label>
+                    <textarea id="jsonInput" placeholder='Paste your array of objects here...'></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="csvOutput">Output CSV Result</label>
+                    <textarea id="csvOutput" readonly placeholder="Your flat CSV structure will generate here..."></textarea>
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <button id="convertBtn" onclick="processData()">Convert to CSV</button>
+                <button id="downloadBtn" class="secondary" onclick="downloadCSV()" disabled>Download .csv File</button>
+                <button class="secondary" onclick="clearAll()">Clear Everything</button>
+            </div>
+            
+            <div id="errorBox" class="error-message"></div>
+        </div>
+
+        <section class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Why choose this converter over others?</h3>
+                    <p>Unlike traditional conversion platforms, this tool does not look at or save your data files. All extraction runs directly inside your local browser tab. It safely handles mismatched rows, nested object paths, and multi-value arrays automatically without changing structural properties.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Handles nested structures easily</h3>
+                    <p>Our client-side parsing engine automatically breaks down sub-objects into dot-notation paths (e.g., "user.location.city"), ensuring you never lose data parameters when moving data patterns to Microsoft Excel or Google Sheets.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Deep recursive function to completely flatten any nested object/array structure
+        function flattenObject(obj, prefix = '', res = {}) {
+            for (let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    let propName = prefix ? prefix + '.' + key : key;
+                    
+                    if (typeof obj[key] === 'object' && obj[key] !== null) {
+                        // Recursively flatten internal arrays or nested sub-objects
+                        flattenObject(obj[key], propName, res);
+                    } else {
+                        res[propName] = obj[key];
+                    }
+                }
+            }
+            return res;
+        }
+
+        function processData() {
+            const jsonInput = document.getElementById('jsonInput').value.trim();
+            const errorBox = document.getElementById('errorBox');
+            const csvOutput = document.getElementById('csvOutput');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            errorBox.style.display = "none";
+            csvOutput.value = "";
+            downloadBtn.disabled = true;
+
+            if (!jsonInput) {
+                showError("Please paste some JSON data first.");
+                return;
+            }
+
+            try {
+                let parsedData = JSON.parse(jsonInput);
+                
+                if (!Array.isArray(parsedData)) {
+                    parsedData = [parsedData];
+                }
+
+                if (parsedData.length === 0) {
+                    showError("The array contains no objects.");
+                    return;
+                }
+
+                // 1. Flatten every row inside the array to extract sub-objects
+                let flattenedRows = parsedData.map(item => flattenObject(item));
+
+                // 2. Discover all unique flat headers across all rows
+                let headers = new Set();
+                flattenedRows.forEach(row => {
+                    Object.keys(row).forEach(key => headers.add(key));
+                });
+                const headerArray = Array.from(headers);
+
+                // 3. Construct CSV String
+                let csvLines = [];
+                
+                // Construct Header Line
+                csvLines.push(headerArray.map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+
+                // Construct Data Lines
+                flattenedRows.forEach(row => {
+                    const rowValues = headerArray.map(header => {
+                        let val = row[header];
+                        if (val === undefined || val === null) {
+                            return '""';
+                        }
+                        return `"${String(val).replace(/"/g, '""')}"`;
+                    });
+                    csvLines.push(rowValues.join(','));
+                });
+
+                // Display CSV string output layout structure
+                csvOutput.value = csvLines.join('\n');
+                downloadBtn.disabled = false;
+
+            } catch (e) {
+                showError("Invalid JSON: " + e.message);
+            }
+        }
+
+        function downloadCSV() {
+            const csvContent = document.getElementById('csvOutput').value;
+            if (!csvContent) return;
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "data_export.csv");
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAll() {
+            document.getElementById('jsonInput').value = "";
+            document.getElementById('csvOutput').value = "";
+            document.getElementById('errorBox').style.display = "none";
+            document.getElementById('downloadBtn').disabled = true;
+        }
+
+        function showError(msg) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.innerText = msg;
+            errorBox.style.display = "block";
+        }
+    </script>
+</body>
+</html>
         .container {
             max-width: 1000px;
             margin: 0 auto;
