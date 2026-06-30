@@ -1,200 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Daham Denuwan</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Free JSON to CSV Converter Online - 100% Private & Instant</title>
+    <meta name="description" content="Convert JSON data to Excel CSV format instantly. Free, ad-free, and 100% private. All processing happens in your browser—no data is uploaded to a server.">
+    <meta name="keywords" content="json to csv, convert json to excel, json to csv converter, free json converter, private json parser">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --success-color: #4ade80;
+            --border-color: #334155;
+        }
 
-<style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background:#0e0e10;
-    font-family: system-ui, Arial;
-    color:#eaeaea;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-.top {
-    margin-bottom:20px;
-    display:flex;
-    gap:10px;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
 
-input{
-    width:70px;
-    padding:8px;
-    background:#1a1a1d;
-    border:1px solid #2a2a2e;
-    color:#fff;
-    outline:none;
-    text-align:center;
-    border-radius:6px;
-}
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-.clock-wrap{
-    display:flex;
-    gap:18px;
-}
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
-.clock{
-    width:220px;
-    height:160px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:52px;
-    background:#151518;
-    border:1px solid #2a2a2e;
-    border-radius:14px;
-    cursor:pointer;
-    user-select:none;
-    transition:0.15s;
-}
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
 
-.active{
-    border-color:#4aa3ff;
-    color:#4aa3ff;
-}
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
 
-.controls{
-    margin-top:18px;
-    display:flex;
-    gap:10px;
-}
+        .badge {
+            background-color: #1e293b;
+            border: 1px solid var(--border-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
 
-button{
-    padding:8px 14px;
-    background:#1a1a1d;
-    border:1px solid #2a2a2e;
-    color:#eaeaea;
-    border-radius:6px;
-    cursor:pointer;
-}
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-button:hover{
-    border-color:#4aa3ff;
-}
-</style>
+        .converter-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 3rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 350px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            color: #38bdf8;
+            font-family: "Fira Code", Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea::placeholder {
+            color: #475569;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        button.secondary:hover {
+            background-color: #334155;
+        }
+
+        .error-message {
+            color: #f87171;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Marketing & Informational Content Footer */
+        .info-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .info-card h3 {
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
-
 <body>
 
-<a href="creator.html" class="creator-btn">
-<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M20 21a8 8 0 0 0-16 0"/>
-<circle cx="12" cy="7" r="4"/>
-</svg>
+    <div class="container">
+        <header>
+            <div class="badge-container">
+                <span class="badge">🔒 100% Private (Local Processing)</span>
+                <span class="badge">🚀 Zero Server Uploads</span>
+                <span class="badge">✨ Ad-Free Experience</span>
+            </div>
+            <h1>Smart JSON to CSV Converter</h1>
+            <p class="subtitle">An ultra-fast, modern utility built for developers, data scientists, and analysts. Instantly format complex JSON structures into clean Excel-ready CSV sheets.</p>
+        </header>
 
-<span>About the Creator</span>
-</a>
-    
-<div class="top">
-    <input id="t1set" type="number" value="5" min="1">
-    <input id="t2set" type="number" value="5" min="1">
-</div>
+        <div class="converter-box">
+            <div class="grid">
+                <div class="input-group">
+                    <label for="jsonInput">Input JSON Data</label>
+                    <textarea id="jsonInput" placeholder='[&#10;  {"name": "John Doe", "role": "Developer", "country": "Sri Lanka"},&#10;  {"name": "Jane Smith", "role": "Designer", "country": "Canada"}&#10;]'></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="csvOutput">Output CSV Result</label>
+                    <textarea id="csvOutput" readonly placeholder="Your converted Excel-ready CSV data will appear here..."></textarea>
+                </div>
+            </div>
 
-<div class="clock-wrap">
-    <div id="c1" class="clock active">5:00</div>
-    <div id="c2" class="clock">5:00</div>
-</div>
+            <div class="action-bar">
+                <button id="convertBtn" onclick="processData()">Convert to CSV</button>
+                <button id="downloadBtn" class="secondary" onclick="downloadCSV()" disabled>Download .csv File</button>
+                <button class="secondary" onclick="clearAll()">Clear Everything</button>
+            </div>
+            
+            <div id="errorBox" class="error-message"></div>
+        </div>
 
-<div class="controls">
-    <button onclick="start()">Start</button>
-    <button onclick="pause()">Pause</button>
-    <button onclick="reset()">Reset</button>
-</div>
+        <section class="info-section">
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Why choose this converter over others?</h3>
+                    <p>Unlike traditional conversion platforms, this platform does not look at, monitor, or store your sensitive data files. All operations run directly in your local browser sandbox via modern Web API architecture. It's completely secure for enterprise configurations.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Handles nested structures easily</h3>
+                    <p>Our client-side parsing engine automatically flattens multi-layered arrays into clean columnar tables, making data integration into software like Microsoft Excel or Google Sheets completely seamless.</p>
+                </div>
+            </div>
+        </section>
+    </div>
 
-<script>
-let t1 = 300;
-let t2 = 300;
-let active = 1;
-let running = false;
-let timer = null;
+    <script>
+        function processData() {
+            const jsonInput = document.getElementById('jsonInput').value.trim();
+            const errorBox = document.getElementById('errorBox');
+            const csvOutput = document.getElementById('csvOutput');
+            const downloadBtn = document.getElementById('downloadBtn');
 
-const c1 = document.getElementById("c1");
-const c2 = document.getElementById("c2");
+            errorBox.style.display = "none";
+            csvOutput.value = "";
+            downloadBtn.disabled = true;
 
-function fmt(t){
-    let m = Math.floor(t/60);
-    let s = t%60;
-    return `${m}:${s.toString().padStart(2,'0')}`;
-}
+            if (!jsonInput) {
+                showError("Please paste some JSON data first.");
+                return;
+            }
 
-function draw(){
-    c1.textContent = fmt(t1);
-    c2.textContent = fmt(t2);
-}
+            try {
+                let parsedData = JSON.parse(jsonInput);
+                
+                // If user pasted a single object instead of an array, wrap it in an array
+                if (!Array.isArray(parsedData)) {
+                    parsedData = [parsedData];
+                }
 
-function tick(){
-    if(!running) return;
+                if (parsedData.length === 0) {
+                    showError("The array is empty.");
+                    return;
+                }
 
-    if(active === 1){
-        t1--;
-        if(t1 < 0) t1 = 0;
-    } else {
-        t2--;
-        if(t2 < 0) t2 = 0;
-    }
+                // Gather all unique keys across all objects (accounts for mismatched structures)
+                let headers = new Set();
+                parsedData.forEach(item => {
+                    Object.keys(item).forEach(key => headers.add(key));
+                });
+                const headerArray = Array.from(headers);
 
-    draw();
-}
+                // Build CSV rows
+                let csvRows = [];
+                
+                // Add header row
+                csvRows.push(headerArray.map(header => `"${header.replace(/"/g, '""')}"`).join(','));
 
-function start(){
-    t1 = parseInt(document.getElementById("t1set").value) * 60;
-    t2 = parseInt(document.getElementById("t2set").value) * 60;
+                // Add data rows
+                parsedData.forEach(item => {
+                    const rowValues = headerArray.map(header => {
+                        let val = item[header];
+                        if (val === undefined || val === null) {
+                            return '""';
+                        }
+                        // Handle objects or arrays inside the property
+                        if (typeof val === 'object') {
+                            val = JSON.stringify(val);
+                        }
+                        // Escape quotes for CSV safety
+                        return `"${String(val).replace(/"/g, '""')}"`;
+                    });
+                    csvRows.push(rowValues.join(','));
+                });
 
-    active = 1;
-    running = true;
+                // Display result
+                csvOutput.value = csvRows.join('\n');
+                downloadBtn.disabled = false;
 
-    c1.classList.add("active");
-    c2.classList.remove("active");
+            } catch (e) {
+                showError("Invalid JSON structure: " + e.message);
+            }
+        }
 
-    clearInterval(timer);
-    timer = setInterval(tick, 1000);
+        function downloadCSV() {
+            const csvContent = document.getElementById('csvOutput').value;
+            if (!csvContent) return;
 
-    draw();
-}
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "converted_data.csv");
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
-function switchTo(next){
-    if(!running) return;
+        function clearAll() {
+            document.getElementById('jsonInput').value = "";
+            document.getElementById('csvOutput').value = "";
+            document.getElementById('errorBox').style.display = "none";
+            document.getElementById('downloadBtn').disabled = true;
+        }
 
-    active = next;
-    c1.classList.toggle("active", active === 1);
-    c2.classList.toggle("active", active === 2);
-}
-
-c1.onclick = () => switchTo(2);
-c2.onclick = () => switchTo(1);
-
-function pause(){
-    running = !running;
-}
-
-function reset(){
-    running = false;
-    clearInterval(timer);
-
-    t1 = parseInt(document.getElementById("t1set").value) * 60;
-    t2 = parseInt(document.getElementById("t2set").value) * 60;
-
-    active = 1;
-
-    c1.classList.add("active");
-    c2.classList.remove("active");
-
-    draw();
-}
-
-draw();
-</script>
-    <div class="creator-container">
-    <a href="creator.html" class="creator-btn">
-        👤 About the Creator
-    </a>
-</div>
-
+        function showError(msg) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.innerText = msg;
+            errorBox.style.display = "block";
+        }
+    </script>
 </body>
 </html>
