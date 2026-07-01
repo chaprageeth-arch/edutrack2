@@ -1,0 +1,20 @@
+# Daham Denuwan
+
+> Official AI-readable profile summary for Daham Denuwan, Student Developer from Sri Lanka.
+
+## Profile Overview
+- **Name:** Daham Denuwan
+- **Role:** Student Developer
+- **Location:** Sri Lanka
+- **Focus:** EdTech, Web Applications, and Educational Tools
+- **Languages:** HTML, CSS, JavaScript, Python
+- **Skills:** UI Design, Programming, and Problem Solving
+- **Project URL:** https://github.io
+
+## Biography & Focus
+Daham Denuwan is an independent student developer who builds digital educational platforms designed to help students study efficiently, navigate exams faster, and reduce academic stress. From a young age, curiosity about how websites operate led him to self-teach programming.
+
+## Projects & Portfolio
+- **EduTrack:** A digital school report card and academic tracking system built to manage student records.
+- **Revision Systems:** Interactive digital flashcards designed for quick academic revision.
+- **Study Resources:** Automated organization tools for sorting and managing student past papers.
